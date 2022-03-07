@@ -7,19 +7,27 @@ const ArrayList = std.ArrayList;
 const ArenaAllocator = heap.ArenaAllocator;
 
 fn getChar(i: u8) u8 {
-    return switch (i) {
-        32...126 => i,
-        else => ' ',
-    };
+    if (i < 33 or i == 127) {
+        return ' ';
+    } else {
+        return i;
+    }
 }
 
-fn getBodyRow(allocator: mem.Allocator, i: u8) ![]const u8 {
+fn getBodyRow(allocator: mem.Allocator, i: usize) ![]const u8 {
     var list = ArrayList(u8).init(allocator);
-    var j: u8 = 0;
+
+    var j: usize = 0;
     while (j < 4) : (j += 1) {
         const y = i + j * 32;
-        const columns = try fmt.allocPrint(allocator, "{d:>3} {o:>4} {x:>4}  {c}", .{ y, y, y, getChar(y) });
+
+        const columns = try fmt.allocPrint(
+            allocator,
+            "{d:>3} {o:>4} {x:>4}  {c}",
+            .{ y, y, y, getChar(@intCast(u8, y)) });
+
         try list.appendSlice(columns);
+
         if (j < 3) {
             try list.appendSlice(" | ");
         }
@@ -41,7 +49,7 @@ pub fn main() anyerror!void {
     const header_row = getHeaderRow();
     print("{s}\n", .{header_row});
 
-    var i: u8 = 0;
+    var i: usize = 0;
     while (i < 32) : (i += 1) {
         const body_row = try getBodyRow(allocator, i);
         print("{s}\n", .{body_row});
