@@ -30,7 +30,7 @@ fn get_body_row(allocator: mem.Allocator, i: u8) ![]const u8 {
 
 fn get_header_row() []const u8 {
     const header = "Dec  Hex  Oct  C";
-    return ("Dec  Hex  Oct  C" ++ " | ") ** 3 ++ header;
+    return (header ++ " | ") ** 3 ++ header;
 }
 
 pub fn main() anyerror!void {
