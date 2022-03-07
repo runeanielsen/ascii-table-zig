@@ -4,10 +4,10 @@ const mem = std.mem;
 const fmt = std.fmt;
 const ArrayList = std.ArrayList;
 
-fn get_char(i: u8) u8  {
+fn get_char(i: u8) u8 {
     return switch (i) {
         32...126 => i,
-        else => ' '
+        else => ' ',
     };
 }
 
