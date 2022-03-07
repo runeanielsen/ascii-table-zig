@@ -16,14 +16,19 @@ fn get_body_row(allocator: mem.Allocator, i: u8) ![]const u8 {
     var j: u8 = 0;
     while (j < 4) : (j += 1) {
         const y = i + j * 32;
-        const columns = try fmt.allocPrint(allocator, "{d:>3} {o:>4} {x:>4}  {c} | ", .{ y, y, y, get_char(y) });
+        const columns = try fmt.allocPrint(allocator, "{d:>3} {o:>4} {x:>4}  {c}", .{ y, y, y, get_char(y) });
         try list.appendSlice(columns);
+        if (j < 3) {
+            try list.appendSlice(" | ");
+        }
     }
+
     return list.items;
 }
 
 fn get_header_row() []const u8 {
-    return ("Dec  Hex  Oct  C" ++ " | ") ** 4;
+    const header = "Dec  Hex  Oct  C";
+    return ("Dec  Hex  Oct  C" ++ " | ") ** 3 ++ header;
 }
 
 pub fn main() anyerror!void {
