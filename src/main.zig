@@ -2,8 +2,9 @@ const std = @import("std");
 const print = std.debug.print;
 const mem = std.mem;
 const fmt = std.fmt;
+const heap = std.heap;
 const ArrayList = std.ArrayList;
-const ArenaAllocator = std.heap.ArenaAllocator;
+const ArenaAllocator = heap.ArenaAllocator;
 
 fn get_char(i: u8) u8 {
     return switch (i) {
@@ -33,7 +34,7 @@ fn get_header_row() []const u8 {
 }
 
 pub fn main() anyerror!void {
-    var arena = ArenaAllocator.init(std.heap.page_allocator);
+    var arena = ArenaAllocator.init(heap.page_allocator);
     defer arena.deinit();
     const allocator = arena.allocator();
 
