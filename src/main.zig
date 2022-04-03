@@ -23,7 +23,7 @@ fn getBodyRow(allocator: mem.Allocator, i: usize) ![]const u8 {
 
         const columns = try fmt.allocPrint(
             allocator,
-            "{d:>3} {o:>4} {x:>4}  {c}",
+            "{d:>3} {x:>4} {o:>4}  {c}",
             .{ y, y, y, getChar(@intCast(u8, y)) });
 
         try list.appendSlice(columns);
