@@ -45,7 +45,6 @@ fn asciiTable(allocator: mem.Allocator) ![]const u8 {
     formattedTableRows[0] = headerRow();
     for (tableRows()) |row, i| {
         formattedTableRows[i + 1] = try bodyRow(allocator, row);
-        std.log.warn("{s}", .{formattedTableRows[i + 1]});
     }
     return try mem.join(allocator, "\n", formattedTableRows[0..]);
 }
