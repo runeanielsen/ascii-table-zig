@@ -97,7 +97,7 @@ test "getting table rows" {
         [_]u8{ 3, 35, 67, 99 },
     };
 
-    // We just test just the first 4 rows.
+    // We just test the first 4 rows.
     const rows = tableRows()[0..4];
 
     try testing.expectEqual(expRows, rows.*);
