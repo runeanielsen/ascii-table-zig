@@ -4,6 +4,8 @@ const fmt = std.fmt;
 const testing = std.testing;
 const mem = std.mem;
 
+const headerRow: []const u8 = ("Dec  Hex  Oct  C" ++ " | ") ** 3 ++ "Dec  Hex  Oct  C";
+
 fn getChar(i: u8) u8 {
     return if (i < 33 or i == 127) ' ' else i;
 }
@@ -17,35 +19,30 @@ fn tableRows() [32][4]u8 {
         rows[i][2] = i + 64;
         rows[i][3] = i + 96;
     }
+
     return rows;
 }
 
 fn bodyRow(allocator: mem.Allocator, tableRow: [4]u8) ![]const u8 {
     var formattedBlocks: [4][]const u8 = undefined;
     for (tableRow) |n, i| {
-        formattedBlocks[i] = try formatBlock(allocator, n);
+        formattedBlocks[i] = try fmt.allocPrint(
+            allocator,
+            "{d:>3} {x:>4} {o:>4}  {c}",
+            .{ n, n, n, getChar(n) },
+        );
     }
+
     return try mem.join(allocator, " | ", formattedBlocks[0..]);
-}
-
-fn headerRow() []const u8 {
-    return ("Dec  Hex  Oct  C" ++ " | ") ** 3 ++ "Dec  Hex  Oct  C";
-}
-
-fn formatBlock(allocator: mem.Allocator, n: u8) ![]const u8 {
-    return try fmt.allocPrint(
-        allocator,
-        "{d:>3} {x:>4} {o:>4}  {c}",
-        .{ n, n, n, getChar(n) },
-    );
 }
 
 fn asciiTable(allocator: mem.Allocator) ![]const u8 {
     var formattedTableRows: [33][]const u8 = undefined;
-    formattedTableRows[0] = headerRow();
+    formattedTableRows[0] = headerRow;
     for (tableRows()) |row, i| {
         formattedTableRows[i + 1] = try bodyRow(allocator, row);
     }
+
     return try mem.join(allocator, "\n", formattedTableRows[0..]);
 }
 
@@ -69,24 +66,6 @@ test "create body row" {
 
     try testing.expectEqualStrings(expOne, exampleOneResult);
     try testing.expectEqualStrings(expTwo, exampleTwoResult);
-}
-
-test "format block" {
-    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    defer arena.deinit();
-    const allocator = arena.allocator();
-
-    const one = "  0    0    0   ";
-    const two = " 32   20   40   ";
-    const three = " 64   40  100  @";
-
-    const blockOne = try formatBlock(allocator, 0);
-    const blockTwo = try formatBlock(allocator, 32);
-    const blockThree = try formatBlock(allocator, 64);
-
-    try testing.expectEqualStrings(one, blockOne);
-    try testing.expectEqualStrings(two, blockTwo);
-    try testing.expectEqualStrings(three, blockThree);
 }
 
 test "getting table rows" {
