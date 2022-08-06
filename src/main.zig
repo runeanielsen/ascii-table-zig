@@ -1,5 +1,5 @@
 const std = @import("std");
-const print = std.debug.print;
+const stdout = std.io.getStdOut().writer();
 const fmt = std.fmt;
 const testing = std.testing;
 const mem = std.mem;
@@ -50,7 +50,7 @@ pub fn main() !void {
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
     defer arena.deinit();
     const allocator = arena.allocator();
-    print("{s}\n", .{asciiTable(allocator)});
+    try stdout.print("{s}\n", .{asciiTable(allocator)});
 }
 
 test "create body row" {
