@@ -33,7 +33,7 @@ fn bodyRow(allocator: mem.Allocator, tableRow: [4]u8) ![]const u8 {
         );
     }
 
-    return try mem.join(allocator, " | ", formattedBlocks[0..]);
+    return try mem.join(allocator, " | ", &formattedBlocks);
 }
 
 fn asciiTable(allocator: mem.Allocator) ![]const u8 {
